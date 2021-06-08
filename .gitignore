@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# DE GAN
+de_gan/data/*
+de_gan/model/*
+de_gan/result/*
