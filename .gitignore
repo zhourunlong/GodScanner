@@ -130,6 +130,7 @@ dmypy.json
 
 
 # DE GAN
-de_gan/data/*
+de_gan/data/GT
+de_gan/data/original
 de_gan/model/*
 de_gan/result/*
