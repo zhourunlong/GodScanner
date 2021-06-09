@@ -34,7 +34,7 @@
    ├─clean_images_grayscale
    └─simulated_noisy_images_grayscale
 ```
-Files inside each folder is omitted.
+Files inside each folder are omitted.
 
 ## Create dataset
 
