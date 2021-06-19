@@ -38,6 +38,4 @@ Files inside each folder are omitted.
 
 ## Create dataset
 
-
-
 Run all commands in `create_dataset.ipynb`, you will get two folders: `original` and `GT`.
