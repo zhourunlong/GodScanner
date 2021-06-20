@@ -1,0 +1,9 @@
+torchvision ==0.2.0
+scipy
+tqdm
+tensorboardX
+hdf5storage
+tqdm
+scipy
+numpy
+matplotlib

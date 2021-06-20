@@ -1,0 +1,2 @@
+python trainwc.py --arch unetnc --data_path $1/data2/shenrui/Downloads/doc3d --batch_size 50 --tboard
+python trainbm.py --arch dnetccnl --img_rows 128 --img_cols 128 --n_epoch 250 --batch_size 50 --l_rate 0.0001 --tboard --data_path $1/data2/shenrui/Downloads/doc3d
