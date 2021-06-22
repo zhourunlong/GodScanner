@@ -20,6 +20,7 @@ from de_gan.dataset import build_dataset
 
 from tqdm import tqdm
 import argparse
+import metrics
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model-dir", default='de_gan/best.pt', type=str)
@@ -212,6 +213,8 @@ if __name__ == '__main__':
                         help='Show the input image and output unwarped')
     parser.set_defaults(show=False)
     args = parser.parse_args()
+
+    running_psnr, running_f, running_pf, running_drd = [], [], [], []
     for fname in os.listdir(args.img_path):
         if '.jpg' in fname or '.JPG' in fname or '.png' in fname:
             img_path=os.path.join(args.img_path,fname)
@@ -223,6 +226,14 @@ if __name__ == '__main__':
             predicted = evaluate(uwpred)
             outputImg = Image.fromarray(predicted * 255.0).convert("L")
             outputImg.save(splitted[0] + "_predicted" + splitted[1])
+
+            psnr, fmeasure, pfmeasure, drd = metrics.evaluate_metrics(predicted, gt)
+            running_psnr.append(psnr)
+            running_f.append(fmeasure)
+            running_pf.append(pfmeasure)
+            running_drd.append(drd)
+    
+    print("PSNR", np.mean(running_psnr), "F", np.mean(running_f), "Pseudo F", np.mean(running_pf), "DRD", np.mean(running_drd))
 
 '''
 all_files = os.listdir(args.pic_dir)
