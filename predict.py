@@ -209,9 +209,11 @@ if __name__ == '__main__':
                         help='Path of the output unwarped image')
     parser.add_argument('--out_path2', nargs='?', type=str, default='DewarpNet/eval/together/',
                         help='Path of the output unwarped image')
+    parser.add_argument('--gt_path', nargs='?', type=str, default='gt/',
+                        help='Path of the ground-truth images')
     parser.add_argument('--show', dest='show', action='store_true',
                         help='Show the input image and output unwarped')
-    parser.add_argument('--generate', action='store_true')
+    parser.add_argument('--generate', action='store_true', default=False)
     parser.set_defaults(show=False)
     args = parser.parse_args()
 
@@ -233,7 +235,10 @@ if __name__ == '__main__':
 
             if not args.generate:
                 # retrieve gt from somewhere
-                gt = 
+                tex_name = fname.split('-')[1]
+                print(tex_name)
+                gt = cv2.imread(os.path.join(args.gt_path, tex_name + '.jpg'))
+                gt = cv2.cvtColor(gt, cv2.COLOR_BGR2GRAY)
                 psnr, fmeasure, pfmeasure, drd = metrics.evaluate_metrics(predicted, gt)
                 running_psnr.append(psnr)
                 running_f.append(fmeasure)
