@@ -124,7 +124,11 @@ def drd(im, im_gt):
         tmp *= W
 
         drd_sum += np.sum(tmp)
-    return drd_sum/nubn
+    
+    if nubn != 0:
+        return drd_sum/nubn
+    else:
+        return 1
 
 def evaluate_metrics(im, im_gt):
     height, width = im.shape
@@ -161,11 +165,26 @@ def evaluate_metrics(im, im_gt):
     fn[(im==1) & (im_gt==0)] = 1
     numfn = fn.sum()
 
-    precision = numtp / (numtp + numfp)
-    recall = numtp / (numtp + numfn)
+    if numtp + numfp != 0:
+        precision = numtp / (numtp + numfp)
+    else:
+        precision = 1
+
+    if numtp + numfn != 0:
+        recall = numtp / (numtp + numfn)
+    else:
+        recall = 1
     precall = numptp / np.sum(1-im_sk)
-    fmeasure = (2*recall*precision)/(recall+precision)
-    pfmeasure = (2*precall*precision)/(precall+precision)
+    
+    if recall+precision != 0:
+        fmeasure = (2*recall*precision)/(recall+precision)
+    else:
+        fmeasure = 1
+    
+    if precall+precision != 0:
+        pfmeasure = (2*precall*precision)/(precall+precision)
+    else:
+        pfmeasure = 1
 
     mse = (numfp+numfn)/npixel
     if mse != 0:
