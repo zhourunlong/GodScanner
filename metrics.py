@@ -168,7 +168,10 @@ def evaluate_metrics(im, im_gt):
     pfmeasure = (2*precall*precision)/(precall+precision)
 
     mse = (numfp+numfn)/npixel
-    psnr = 10.*np.log10(1./mse)
+    if mse != 0:
+        psnr = 10.*np.log10(1./mse)
+    else:
+        psnr = 100
 
     im_dn = im_gtbd.copy()
     im_dn[fn==0] = 0
