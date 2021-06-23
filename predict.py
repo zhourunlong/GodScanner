@@ -211,8 +211,12 @@ if __name__ == '__main__':
                         help='Path of the output unwarped image')
     parser.add_argument('--show', dest='show', action='store_true',
                         help='Show the input image and output unwarped')
+    parser.add_argument('--generate', action='store_true')
     parser.set_defaults(show=False)
     args = parser.parse_args()
+
+    os.makedirs(args.out_path, exist_ok=True)
+    os.makedirs(args.out_path2, exist_ok=True)
 
     running_psnr, running_f, running_pf, running_drd = [], [], [], []
     for fname in os.listdir(args.img_path):
@@ -227,13 +231,17 @@ if __name__ == '__main__':
             outputImg = Image.fromarray(predicted * 255.0).convert("L")
             outputImg.save(splitted[0] + "_predicted" + splitted[1])
 
-            psnr, fmeasure, pfmeasure, drd = metrics.evaluate_metrics(predicted, gt)
-            running_psnr.append(psnr)
-            running_f.append(fmeasure)
-            running_pf.append(pfmeasure)
-            running_drd.append(drd)
+            if not args.generate:
+                # retrieve gt from somewhere
+                gt = 
+                psnr, fmeasure, pfmeasure, drd = metrics.evaluate_metrics(predicted, gt)
+                running_psnr.append(psnr)
+                running_f.append(fmeasure)
+                running_pf.append(pfmeasure)
+                running_drd.append(drd)
     
-    print("PSNR", np.mean(running_psnr), "F", np.mean(running_f), "Pseudo F", np.mean(running_pf), "DRD", np.mean(running_drd))
+    if not args.generate:
+        print("PSNR", np.mean(running_psnr), "F", np.mean(running_f), "Pseudo F", np.mean(running_pf), "DRD", np.mean(running_drd))
 
 '''
 all_files = os.listdir(args.pic_dir)
