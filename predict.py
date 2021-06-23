@@ -22,20 +22,14 @@ from tqdm import tqdm
 import argparse
 import metrics
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--model-dir", default='de_gan/best.pt', type=str)
-parser.add_argument("--pic-dir", default='de_gan/evaluate_pic', type=str, help="Input the folder containing pictures.")
-parser.add_argument("--batch-size", default=50, type=int)
-args = parser.parse_args()
-
-state_dict = torch.load(args.model_dir)
+state_dict = torch.load("de_gan/best.pt")
 model = GeneratorNet(in_channels=1, out_channels=1)
 model.load_state_dict(state_dict["g"])
 model.cuda()
 model.eval()
 
-def evaluate(pic_dir):
-    unpadded_raw_input = pic_dir * 255.
+def evaluate(pic):
+    unpadded_raw_input = pic * 255.
     h, w = unpadded_raw_input.shape[: 2]
     nh, nw = ((h - 1) // 256 + 1) * 256, ((w - 1) // 256 + 1) * 256
     ph = ((nh - h) // 2, (nh - h + 1) // 2)
@@ -56,8 +50,8 @@ def evaluate(pic_dir):
     batched.unsqueeze_(1)
 
     batch_queue = []
-    for i in range(0, cnt, args.batch_size):
-        batch_queue.append(batched[i:i+args.batch_size, :, :, :])
+    for i in range(0, cnt, 50):
+        batch_queue.append(batched[i:i+50, :, :, :])
 
     i, j = 0, 0
     with tqdm(batch_queue, desc="Evaluating") as pbar:
@@ -199,6 +193,7 @@ def test(args,img_path,fname):
     return uwpred[:, :, ::-1]
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
     parser.add_argument('--wc_model_path', nargs='?', type=str, default='DewarpNet/eval/models/unetnc_doc3d.pkl',
                         help='Path to the saved wc model')
     parser.add_argument('--bm_model_path', nargs='?', type=str, default='DewarpNet/eval/models/dnetccnl_doc3d.pkl',
@@ -248,15 +243,3 @@ if __name__ == '__main__':
     if not args.generate:
         print("PSNR", np.mean(running_psnr), "F", np.mean(running_f), "Pseudo F", np.mean(running_pf), "DRD", np.mean(running_drd))
 
-'''
-all_files = os.listdir(args.pic_dir)
-
-for fn in all_files:
-    splitted = os.path.splitext(fn)
-    if splitted[0].endswith("_predicted"):
-        continue
-    print(fn)
-    predicted = evaluate(os.path.join(args.pic_dir, fn))
-    outputImg = Image.fromarray(predicted * 255.0).convert("L")
-    outputImg.save(os.path.join(args.pic_dir, splitted[0] + "_predicted" + splitted[1]))
-'''
