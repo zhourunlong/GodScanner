@@ -174,7 +174,11 @@ def evaluate_metrics(im, im_gt):
         recall = numtp / (numtp + numfn)
     else:
         recall = 1
-    precall = numptp / np.sum(1-im_sk)
+    
+    if np.sum(1-im_sk) != 0:
+        precall = numptp / np.sum(1-im_sk)
+    else:
+        precall = 1
     
     if recall+precision != 0:
         fmeasure = (2*recall*precision)/(recall+precision)
